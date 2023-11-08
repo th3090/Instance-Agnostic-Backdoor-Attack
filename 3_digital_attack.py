@@ -16,12 +16,12 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     img_size = (224, 224)
 
-    save_path = './new_dataset/Training_105/Z_Taehoon3'
+    save_path = './dataset/Training_105/Z_Taehoon3'
     log_path = './results/FC_Penu_Vgg_single_generator.txt'
 
     # base = './new_dataset/Attack_Source/Taehoon_benign_10'
-    base = './new_dataset/Attack_Source/Taehoon_benign'
-    target = './new_dataset/Attack_Source/Single_digital_trigger'
+    base = './dataset/Attack_Source/Taehoon_benign'
+    target = './dataset/Attack_Source/Single_digital_trigger'
 
     # Generator setting
     pretrained = True
@@ -33,7 +33,7 @@ def main():
     fc1_extractor = False
     block = False
 
-    attack_modes = 'proposed'
+    attack_modes = 'Digital'
     # attack_modes = 'convex_polytope'
 
     target_net = vgg16(pretrained=pretrained, check_point=check_point)
@@ -44,7 +44,7 @@ def main():
 
     target_net.eval()
 
-    if attack_modes == 'proposed':
+    if attack_modes == 'Digital':
 
         sub_net_list = [target_net]
 
@@ -78,49 +78,6 @@ def main():
             # print("Base instance - Poisoned instance: {}".format(
             #     feature_loss_compare(target_net, base_tensor_list[0], attack_instance)))
 
-    elif attack_modes == 'convex_polytope':
-        sub_net_list = [target_net]
-
-        base_img_list = []
-        total_base_tensor_list = []
-
-        for i in os.listdir(base):
-            base_img_list.append(i)
-
-        for img in range(len(base_img_list)):
-            base_image = img_read(os.path.join(base + "/" + base_img_list[img]))
-
-            # image를 tensor 형태로 변환 후 base_list에 저장
-            base_instance = img_to_tensor(base_image, img_size)
-            total_base_tensor_list.append(base_instance)
-
-        for i in range(4):
-            target_tensor = set_target_tensor_list(target_path=target, img_size=img_size,
-                                                   random_sample=True, number=1)
-
-            base_tensor_list = total_base_tensor_list[(i * 5):(i + 1) * 5]
-
-            poison_init = base_tensor_list
-
-            _, total_loss = make_convex_polytope_poisons(sub_net_list, target_net, base_tensor_list,
-                                                         target_tensor,
-                                                         device, save_path, opt_method='adam',
-                                                         lr=0.001, momentum=0.9, iterations=2000,
-                                                         epsilon=8 / 255,
-                                                         decay_ites=[10000, 15000], decay_ratio=0.1,
-                                                         mean=torch.Tensor((0.4914, 0.4822, 0.4465)).reshape(1,
-                                                                                                             3,
-                                                                                                             1,
-                                                                                                             1),
-                                                         std=torch.Tensor((0.2023, 0.1994, 0.2010)).reshape(1,
-                                                                                                            3,
-                                                                                                            1,
-                                                                                                            1),
-                                                         poison_idxes=[], poison_label=-1,
-                                                         tol=1e-6, start_ite=0, poison_init=poison_init,
-                                                         end2end=False, count=i, bulls_eye=True)
-
-        print(total_loss)
 
     # Training
     remove_list = ["Z_Taehoon1", "Z_Taehoon2", "Z_Taehoon4"]
@@ -131,22 +88,16 @@ def main():
     batch_size = 32
     learning_rate = 0.001
 
-    # train_dir = './new_dataset/Training_55'
-    # test_dir = './new_dataset/Test_55'
+    train_dir = './dataset/Training_105'
+    test_dir = './dataset/Test_105'
 
-    train_dir = './new_dataset/Training_105'
-    test_dir = './new_dataset/Test_105'
-
-    attack_test_dir = './new_dataset/Attack_Test'
+    attack_test_dir = './dataset/Attack_Test'
     attack_test_list = ["Gyumin_trigger1", "Gyumin_trigger1_aug", "Hyeju_trigger1", "Jinmyeong_trigger1",
                         "Sunjin_trigger1", "Taehoon_trigger1"]
 
     # attack_test_label = [20, 20, 20, 21, 22, 23, 24]
     attack_test_label = [100, 100, 101, 102, 103, 104]
     attack_target_label = 104
-
-    # attack_test_label = [50, 50, 51, 52, 53, 54]
-    # attack_target_label = 54
 
     attack_log_path = './results/attack_log3.txt'
     path2weights = './result/trained_weight.pth'
