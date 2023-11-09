@@ -23,23 +23,6 @@ Backdoor attacks, which induce a trained model to behave as intended by an adver
 - `4_proposed_attack.py`: run file for performing proposed attack method
 - `README.md`: light documentation of this repository
 
-### Run Convex Polytope Attack 
-```
-python3 1_convex_attack.py
-```
-### Run Bullseye Convex Polytope Attack
-```
-python3  2_bullseye_attack.py
-```
-### Run Hidden Trigger Attack 
-```
-python3 3_digital_attack.py
-```
-### Run Proposed Attack Method
-```
-python3 4_proposed_attack.py
-```
-  
 ## Implementation Environment
 - Linux: Ubuntu 16.04.7
 - Python: 3.7.9
@@ -49,3 +32,22 @@ python3 4_proposed_attack.py
 - opencv-python==4.6.0.66
 - imageio==2.19.3
 - scipy==1.7.3
+
+### Run Convex Polytope Attack 
+```
+python3 1_convex_attack.py
+```
+### Run Bullseye Convex Polytope Attack
+```
+python3 2_bullseye_attack.py
+```
+### Run Hidden Trigger Attack 
+```
+python3 3_digital_attack.py
+```
+### Run Proposed Attack Method
+```
+python3 4_proposed_attack.py
+```
+
+
